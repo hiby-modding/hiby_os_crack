@@ -37,6 +37,8 @@ For equivalent functionality on Windows, please see `docs/WIN_INSTALL.md`.
         - [hardware manual](thirdpartydocs/Halley6_hardware_develop_V2.1.pdf) ([translated](thirdpartydocs/Halley6_hardware_develop_V2.1.zh-CN_translated_EN.pdf))
         - [baseboard schematic](thirdpartydocs/halley6_baseboard_v2.0.pdf)
         - [coreboard schematic](thirdpartydocs/halley6_coreboard_v2.0.pdf)
+    - [Ingenic Docs Git](https://gitee.com/ingenic-dev/ingenic-linux-docs/tree/ingenic-master)
+        - [X16XX-halley6](https://gitee.com/ingenic-dev/ingenic-linux-docs/blob/ingenic-master/zh-cn/X16XX/X16XX-halley6/01_%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.md)
 
 
 ## Workflow
