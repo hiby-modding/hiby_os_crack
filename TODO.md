@@ -59,6 +59,7 @@
 - [ ] fix bluetooth menu slow response (after turning on bluetooth, it can take quite a while for the rest of the bluetooth settings to appear)
 - [ ] fix wifi menu slow response (after turning on wifi, it can take quite a while for the rest of the wifi settings to appear)
 - [ ] fix very inconsistent and unintuitive settings (backlight settings vs. time setting, USB working mode needs descriptions, etc.)
+- [ ] switch how bluetooth audio input volume works (make it act like bluetooth headphones would. only audio source device's volume matters, pressing volume buttons on the hiby device would increase/decrease source device's volume, etc.)
 - [ ] shrink file system where possible
 
 ## Windows Support
