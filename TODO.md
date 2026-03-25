@@ -27,6 +27,12 @@
 - [ ] console output
 - [ ] kernel boot text output
 
+## Rockbox
+> [Rockbox](https://www.rockbox.org/) is a free replacement firmware for digital music players. It runs on a wide range of players
+*Goal: mention rockbox within this repo and improve rockbox on hiby os devices*
+- [ ] add mention of rockbox on the README
+- [ ] add bluetooth support to rockbox on hiby os (bluetooth input + bluetooth output)
+
 ## hiby_player Decomp
 *Goal: get `hiby_player` in a state where new buttons, pages, and features (i.e. audiobook support) can be added*
 - [?] de-obfuscate gui rendering
