@@ -1,4 +1,6 @@
 # Contributing
 Anyone is welcome to contribute to this project.
 
-If you want to add to the project, just make an issue requesting the feature and asking to be added to the project. I haven't done many larger scale community projects on github, so maybe that's not the best way to do this. So if you know a better way to handle contributions, I'd love to know.
+If you want to add to the project, just make a branch for your feature and make a pull request for that branch. I can review and merge it when it's ready.
+
+I haven't really done any community projects on git before, so I might have the repo set up wrong. So if you're not able to make a branch or a PR, just make an issue requesting me to change the repo settings.
