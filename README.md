@@ -24,6 +24,7 @@ For equivalent functionality on Windows, please see `docs/WIN_INSTALL.md`.
 - R3ProII
     - [specs](r3proii/SPECS.md)
     - [qemu readme](r3proii/qemu/README.md)
+    - [squashfs-root-example readme](r3proii/squashfs-root-example/README.md)
 - R1
     - [specs](r1/SPECS.md)
     - [qemu readme](r1/qemu/README.md)
