@@ -13,7 +13,7 @@
     - from what i can tell, it was renamed by hiby for the production release of the firmware in order to disable adb debugging functionality
     - (TODO) needs testing, but i believe that renaming this file to `S90adb` re-enables adb debug functionality. it might add a "Dock" option to usb working mode menu
 - the `adb/` folder
-    - it not get directly run by `rcS` because it does not match on the `S??*` selector
+    - it doesn't get directly run by `rcS` because it does not match on the `S??*` selector
     - the contained scripts are, instead, child scripts of `T90adb`
 
 
@@ -51,4 +51,3 @@
   <theme>Theme</theme>
 </resources>
 ```
-
