@@ -1,6 +1,12 @@
 # HiBy OS Crack
 Cracking the firmware of HiBy's linux devices
 
+This repo is for:
+- Tools to unpack/repack hiby os firmwares
+- Documentation on the structure of the firmware
+- Documentation on the device (datasheets, ISA, etc.)
+- Other tools and information helpful for creating custom firmwares
+
 This project is part of the hiby-modding organization. Also see:
 - [hiby-r3proii-custom-firmware](https://github.com/hiby-modding/hiby-r3proii-custom-firmware) by noisetta — complementary firmware modding project that adds Arabic text rendering support and documents the proprietary OTA firmware format.
 
