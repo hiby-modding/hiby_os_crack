@@ -1,93 +1,90 @@
 #!/bin/bash
+set -euo pipefail
 
-# Script to repack modified firmware files into a new firmware file
+# Script to repack HiBy R1 firmware based on rockbox r1_patcher.sh logic
 
-# Getting project root dir
-PROJECT_ROOT=`git rev-parse --show-toplevel`
-FOLDER_ROOT=${PROJECT_ROOT}/r1/unpacking_and_repacking
+if [[ ! -d "squashfs-root" ]] || [[ ! -f "xImage" ]]; then
+    echo "Error: Missing squashfs-root/ directory or xImage file in current directory."
+    echo "Run unpack.sh first and ensure xImage remains in the path."
+    exit 1
+fi
 
-cd $FOLDER_ROOT
+OUT_PKG="r1_repacked.upt"
 
-rm -r temp
-rm r1.upt
+echo "======================================"
+echo "Repacking into $OUT_PKG..."
+echo "======================================"
 
-# making temporary directory, where operations will be done
-mkdir temp
-cd temp
+rm -rf __repack_tmp 2>/dev/null
+mkdir -p __repack_tmp/image_contents/ota_v0
 
-echo "#######################################"
-echo "### COPYING ORIGINAL FIRMWARE FILES ###"
-echo "#######################################"
-echo ""
+echo "1. Generating rootfs.squashfs..."
+# Use -comp lzo and -all-root as expected by original format
+sudo mksquashfs squashfs-root __repack_tmp/rootfs.squashfs -comp lzo -all-root >/dev/null
 
-cp ${PROJECT_ROOT}/r1/original_firmware/r1.upt ./
-7z x r1.upt
-rm r1.upt
+cd __repack_tmp/image_contents/ota_v0
 
-echo "###################################"
-echo "### REMOVING OLD SQUASHFS FILES ###"
-echo "###################################"
-echo ""
+# Process rootfs.squashfs
+echo "2. Chunking and hashing rootfs..."
+split -b 512k "../../rootfs.squashfs" --numeric-suffixes=0 -a 4 rootfs.squashfs.
+rootfs_md5=($(md5sum "../../rootfs.squashfs"))
+rootfs_size=$(stat -c%s "../../rootfs.squashfs")
 
-cd ota_v0
-rm ota_md5_rootfs.squashfs.*
-rm rootfs.*
+md5=$rootfs_md5
+ota_md5_rootfs="ota_md5_rootfs.squashfs.$md5"
+> "$ota_md5_rootfs"
 
+for part in $(ls rootfs.squashfs.[0-9]* | sort); do
+    md5next=($(md5sum "$part"))
+    echo $md5next >> "$ota_md5_rootfs"
+    mv "$part" "$part.$md5"
+    md5=$md5next
+done
 
-echo "#####################################"
-echo "### GENERATING NEW SQUASHFS FILES ###"
-echo "#####################################"
-echo ""
+# Process xImage
+echo "3. Chunking and hashing xImage..."
+cp "../../../xImage" "../../xImage"
+split -b 512k "../../xImage" --numeric-suffixes=0 -a 4 xImage.
+ximage_md5=($(md5sum "../../xImage"))
+ximage_size=$(stat -c%s "../../xImage")
 
-sudo mksquashfs ${PROJECT_ROOT}/r1/unpacking_and_repacking/squashfs-root ./rootfs.squashfs -comp lzo
-sudo chown $USER:$USER rootfs.squashfs
-split rootfs.squashfs -d -a 4 -b 512k rootfs.squashfs.
+md5=$ximage_md5
+ota_md5_xImage="ota_md5_xImage.$md5"
+> "$ota_md5_xImage"
 
-# getting md5 sum of full squashfs file (needed in some md5 checks)
-SUM=`md5sum rootfs.squashfs | awk '{print $1}'`
-SIZE=`du rootfs.squashfs -b | awk '{print $1}'`
+for part in $(ls xImage.[0-9]* | sort); do
+    md5next=($(md5sum "$part"))
+    echo $md5next >> "$ota_md5_xImage"
+    mv "$part" "$part.$md5"
+    md5=$md5next
+done
 
-cat > ota_update.in <<- EOM
-ota_version=0
+# Create meta files
+echo "4. Generating OTA metadata..."
+echo "ota_version=0
 
 img_type=kernel
 img_name=xImage
-img_size=3760192
-img_md5=4a459b51a152014bfab6c1114f2701e3
+img_size=$ximage_size
+img_md5=$ximage_md5
 
 img_type=rootfs
 img_name=rootfs.squashfs
-img_size=$SIZE
-img_md5=$SUM
-EOM
+img_size=$rootfs_size
+img_md5=$rootfs_md5
+" > ota_update.in
 
-# removing full squashfs file
-rm rootfs.squashfs
+echo > ota_v0.ok
 
-# adding sums to file names and to md5 sum check file (each file has the sum of previous file in its name)
-touch ota_md5_rootfs.squashfs.$SUM
-for filename in rootfs.squashfs.*;
-do
-    mv $filename "$filename.$SUM"
+cd ../
+echo "current_version=0" > ota_config.in
 
-    SUM=`md5sum "$filename.$SUM" | awk '{print $1}'`
+echo "5. Generating ISO image ($OUT_PKG) using genisoimage..."
+# Use genisoimage with exact parameters from r1_patcher.sh
+genisoimage -f -U -J -joliet-long -r -allow-lowercase -allow-multidot -o "../../$OUT_PKG" . >/dev/null 2>&1
 
-    echo $SUM >> ota_md5_rootfs.squashfs.*
-done
+cd ../../
+rm -rf __repack_tmp
 
-echo "#################################"
-echo "### GENERATING FIRMWARE FILE ###"
-echo "#################################"
-echo ""
-
-cd $FOLDER_ROOT
-mkisofs -o r1.upt -J -r ./temp/
-
-# cleanup
-rm -r ./temp/
-
-echo ""
-echo "Repacking complete!"
-echo "Firmware image saved as r1.upt"
-echo ""
-echo "Now you can flash this to the device"
+echo "======================================"
+echo "✅ Repack complete! Flash $OUT_PKG to the device."

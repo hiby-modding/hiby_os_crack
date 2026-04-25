@@ -1,44 +1,39 @@
 #!/bin/bash
+set -euo pipefail
 
-# Script to extract the root filesystem from the original firmware
-# This captures all the original permissions, ownership, and special files
+# Script to unpack HiBy R1 firmware (.upt) based on rockbox r1_patcher.sh logic
 
-# Getting project root dir
-PROJECT_ROOT=`git rev-parse --show-toplevel`
+if [[ $# -eq 1 ]]; then
+    UPT_FILE="$1"
+else
+    UPT_FILE="r1.upt"
+fi
 
-echo "##################################"
-echo "### EXTRACTING SQUASHFS-ROOTFS ###"
-echo "##################################"
-echo ""
+if [[ ! -f "$UPT_FILE" ]]; then
+    echo "Error: Cannot find $UPT_FILE in current directory."
+    echo "Usage: ./unpack.sh [path_to_r1.upt]"
+    exit 1
+fi
 
-rm -r ./temp/  # clean up old temp folder in case it exists (can happen if a script fails to finish)
+echo "======================================"
+echo "Unpacking $UPT_FILE..."
+echo "======================================"
 
-mkdir temp
+rm -rf __unpack_tmp 2>/dev/null
+mkdir -p __unpack_tmp
+7z x -o"__unpack_tmp" "$UPT_FILE" >/dev/null
 
-cd temp
-7z x ${PROJECT_ROOT}/r1/original_firmware/r1.upt  # extract the contents of the firmware iso image
+echo "Reconstructing xImage..."
+cat __unpack_tmp/ota_v0/xImage.* > xImage
+echo "Reconstructing rootfs.squashfs..."
+cat __unpack_tmp/ota_v0/rootfs.squashfs.* > rootfs.squashfs
 
-cd ota_v0
-cat rootfs.squashfs.* > rootfs.squashfs  # combine the squashfs file parts into one
+echo "Extracting rootfs.squashfs to squashfs-root (Requires sudo)..."
+rm -rf squashfs-root 2>/dev/null
+sudo unsquashfs -f -d squashfs-root rootfs.squashfs
 
-echo "##################################"
-echo "### EXTRACTING SQUASHFS-ROOTFS ###"
-echo "##################################"
-echo ""
-
-cd ${PROJECT_ROOT}/r1/unpacking_and_repacking
-
-rm -r squashfs-root  # remove old extraction if it exists
-
-# extracting the file system
-echo "Note: Unsquashfs requires sudo permissions in order to retain original rootfs file permissions (like which user owns a file)"
-sudo unsquashfs -d squashfs-root ./temp/ota_v0/rootfs.squashfs
-
-rm -r ./temp/  # clean up temp folder
-
-echo ""
-echo "Unpacking complete!"
+rm -rf __unpack_tmp
+echo "✅ Unpack complete!"
 echo "Original filesystem extracted to: squashfs-root/"
-echo ""
-echo "Now you can modify files in squashfs-root/"
-echo "Note: You'll probably need sudo privilages to modify many of the system files"
+echo "Kernel saved as: xImage"
+echo "You can now modify files in squashfs-root/"
