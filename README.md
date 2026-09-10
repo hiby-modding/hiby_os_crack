@@ -83,6 +83,10 @@ We have collected documentation and created firmware unpacking/repacking scripts
             - [XBurst ISA MXU](/docs/third_party/soc/X1000_M200_XBurst_ISA_MXU_PM.pdf)
             - [XBurst ISA MXU2](/docs/third_party/soc/XBurst1+Instruction+Set+Architecture+MIPS+extension_enhanced+Unit+2.pdf)
             - [XBurst1 Programming Manual](/docs/third_party/soc/XBurst1_CPU_core-programming_manual.pdf)
+        - Components
+            - [CW2015 datasheet](docs/third_party/components/cw2015-power-management-datasheet.pdf)
+            - [MP2731 datasheet](docs/third_party/components/MP2731GQC.pdf)
+            - [AXP2101 datasheet](docs/third_party/components/X-power-AXP2101_SWcharge_V1.0.pdf)
         - Halley 6 (Ingenic x1600 development board)
             - [hardware manual](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.pdf) ([translated](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.zh-CN_translated_EN.pdf))
             - [baseboard schematic](/docs/third_party/halley6/halley6_baseboard_v2.0.pdf)
