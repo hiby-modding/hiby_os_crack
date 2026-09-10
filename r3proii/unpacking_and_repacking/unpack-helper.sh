@@ -21,7 +21,7 @@ UNPACKING_AND_REPACKING_DIR="${PROJECT_ROOT}/r3proii/unpacking_and_repacking"
 SQUASHFS_OUT_ROOT="${UNPACKING_AND_REPACKING_DIR}/squashfs-root"
 XIMAGE_OUT_PATH="${UNPACKING_AND_REPACKING_DIR}/xImage"
 
-echo -e "${Red}##########################"
+echo -e "${BOLD}##########################"
 echo -e "### SELECTING FIRMWARE ###"
 echo -e "##########################${NC}"
 echo -e ""
@@ -48,7 +48,7 @@ for ((i=0; i<${#ORIGINAL_FW[@]}; i++)); do
         prefix="├──"
     fi
 
-    echo -e "$prefix ${Red}$index)${NC} ${Cyan}$(basename "$file")${NC}"
+    echo -e "$prefix ${Yellow}$index)${NC} ${Cyan}$(basename "$file")${NC}"
     ((index++))
 done
 
@@ -56,7 +56,7 @@ echo -e
 echo -e "Custom"
 
 if [ ${#CUSTOM_FW[@]} -eq 0 ]; then
-    echo -e "└── ${Cyan}[No custom firmwares loaded...] ${Red}(Place any custom firmwares in ${CUSTOM_DIR})${NC}"
+    echo -e "└── ${Cyan}[No custom firmwares loaded...] ${NC}${BOLD}(Place any custom firmwares in ${CUSTOM_DIR})${NC}"
 else
     for ((i=0; i<${#CUSTOM_FW[@]}; i++)); do
         file="${CUSTOM_FW[$i]}"
@@ -68,7 +68,7 @@ else
             prefix="├──"
         fi
 
-        echo -e "$prefix ${Red}$index${NC}) ${Cyan}$(basename "$file")${NC}"
+        echo -e "$prefix ${Yellow}$index${NC}) ${Cyan}$(basename "$file")${NC}"
         ((index++))
     done
 fi
@@ -76,7 +76,7 @@ fi
 echo -e
 
 while true; do
-    read -rp "$(echo -e "Select firmware ${Yellow}[1-$((index-1))]${NC}: ")" choice
+    read -rp "$(echo -e "Select firmware ${Yellow}${BOLD}[1-$((index-1))]${NORMAL}: ")" choice
 
     if [[ "$choice" =~ ^[0-9]+$ ]] && [ -n "${ALL_FW[$choice]}" ]; then
         FW_PATH="${ALL_FW[$choice]}"

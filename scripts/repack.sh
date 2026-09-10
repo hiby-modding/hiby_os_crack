@@ -13,6 +13,9 @@ Purple=$'\033[0;35m'       # Purple
 Cyan=$'\033[0;36m'         # Cyan
 White=$'\033[0;37m'        # White
 
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+
 TEMP_DIR="/tmp/hiby-modding"
 
 show_help() {
@@ -23,10 +26,10 @@ ${Cyan}-k${NC} ${Yellow}XIMAGE${NC} \
 ${Cyan}-o${NC} ${Yellow}OUTPUT_FILE${NC}
 
 ${Green}Options:${NC}
-  ${Cyan}-i${NC} ${Yellow}DIR${NC}     squashfs-root directory   ${Red}(required)${NC}
-  ${Cyan}-k${NC} ${Yellow}FILE${NC}    xImage                    ${Red}(required)${NC}
-  ${Cyan}-o${NC} ${Yellow}FILE${NC}    Output .upt file          ${Red}(required)${NC}
-  ${Cyan}-h${NC}         Show this help
+  ${Yellow}-i${NC} ${Cyan}DIR${NC}     squashfs-root directory   ${Red}(required)${NC}
+  ${Yellow}-k${NC} ${Cyan}FILE${NC}    xImage                    ${Red}(required)${NC}
+  ${Yellow}-o${NC} ${Cyan}FILE${NC}    Output .upt file          ${Red}(required)${NC}
+  ${Yellow}-h${NC}         Show this help
 EOF
 }
 
@@ -74,8 +77,8 @@ output_file=$(realpath "$output_file")
 # check if output already exists, ask if it should be overwritten
 if [[ -e "$output_file" ]]; then
     echo
-    echo -e "${Red}Output file '$output_file' already exists.${NC}"
-    read -rp "Overwrite it? ${Red}[y/N]${NC} " reply
+    echo -e "${Red}${BOLD}WARNING${NORMAL}${Red}: Output file ${Cyan}$output_file${Red} already exists.${NC}"
+    read -rp "Overwrite it? ${Yellow}${BOLD}[y/N]${NORMAL} " reply
 
     case "$reply" in
         [yY]|[yY][eE][sS])
@@ -93,9 +96,9 @@ mkdir -p "$TEMP_DIR/ota_v0"
 
 pushd "$TEMP_DIR/ota_v0" >/dev/null
 
-echo "${Red}#####################################"
+echo "${BOLD}#####################################"
 echo "### GENERATING NEW SQUASHFS FILES ###"
-echo "#####################################${NC}"
+echo "#####################################${NORMAL}"
 echo ""
 
 # Build squashfs filesystem (preserving original owners/permissions)
@@ -124,9 +127,9 @@ for part in $(ls rootfs.squashfs.[0-9]* | sort); do
     md5="${md5next}"
 done
 
-echo "${Red}###################################"
+echo "${BOLD}###################################"
 echo "### GENERATING NEW xImage FILES ###"
-echo "###################################${NC}"
+echo "###################################${NORMAL}"
 echo ""
 
 # Copy xImage to staging to process
@@ -155,9 +158,9 @@ for part in $(ls xImage.[0-9]* | sort); do
     md5="${md5next}"
 done
 
-echo "${Red}#################################"
+echo "${BOLD}#################################"
 echo "### GENERATING METADATA FILES ###"
-echo "#################################${NC}"
+echo "#################################${NORMAL}"
 echo ""
 
 # Generate ota_update.in dynamically
@@ -181,9 +184,9 @@ echo > ota_v0.ok
 # Generate ota_config.in in parent directory (temp/)
 echo "current_version=0" > ../ota_config.in
 
-echo "${Red}#################################"
+echo "${BOLD}#################################"
 echo "### GENERATING FIRMWARE FILE ###"
-echo "#################################${NC}"
+echo "#################################${NORMAL}"
 echo ""
 
 mkisofs -o "${output_file}" -J -r "${TEMP_DIR}"
