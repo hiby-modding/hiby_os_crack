@@ -15,6 +15,9 @@ Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
 
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
 FIRMWARE_DIR="${PROJECT_ROOT}/r1/firmware"
 UNPACKING_AND_REPACKING_DIR="${PROJECT_ROOT}/r1/unpacking_and_repacking"
