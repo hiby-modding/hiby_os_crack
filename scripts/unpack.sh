@@ -13,6 +13,9 @@ Purple=$'\033[0;35m'       # Purple
 Cyan=$'\033[0;36m'         # Cyan
 White=$'\033[0;37m'        # White
 
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+
 TEMP_DIR='/tmp/hiby-modding/' # Directory where in-progress unpacking/repacking files are stored
 
 show_help() {
@@ -20,10 +23,10 @@ show_help() {
 ${Green}Usage:${NC} $(basename "$0") ${Cyan}-i${NC} ${Yellow}INPUT_FILE${NC} ${Cyan}-o${NC} ${Yellow}OUTPUT_DIRECTORY${NC}
 
 ${Green}Options:${NC}
-  ${Cyan}-i${NC} FILE    Input .upt file          ${Red}(required)${NC}
-  ${Cyan}-k${NC} FILE    Output xImage file       ${Red}(required)${NC}
-  ${Cyan}-o${NC} DIR     Output directory         ${Red}(required)${NC}
-  ${Cyan}-h${NC}         Show this help message
+  ${Yellow}-i ${Cyan}FILE${NC}    Input .upt file          ${Red}(required)${NC}
+  ${Yellow}-k ${Cyan}FILE${NC}    Output xImage file       ${Red}(required)${NC}
+  ${Yellow}-o ${Cyan}DIR${NC}     Output directory         ${Red}(required)${NC}
+  ${Yellow}-h${NC}         Show this help message
 
 ${Green}Example:${NC}
   $(basename "$0") -i ./r1.upt -k ./xImage -o ./unpacked-squashfs-root
@@ -31,7 +34,7 @@ EOF
 }
 
 error() {
-    echo -e "${Red}Error: $1${NC}" >&2
+    echo -e "${Red}${BOLD}Error: $1${NORMAL}" >&2
     echo -e >&2
     show_help >&2
     exit 1
@@ -76,12 +79,12 @@ done
 # Check whether either output already exists
 if [[ -e "$output_dir" || -e "$output_ximage" ]]; then
     echo
-    echo -e "${Red}One or more output files already exist:${NC}"
+    echo -e "${Red}${BOLD}WARNING${NORMAL}${Red}: One or more output files already exist:${NC}"
 
     [[ -e "$output_dir" ]]    && echo "  - ${Cyan}${output_dir}${NC}"
     [[ -e "$output_ximage" ]] && echo "  - ${Cyan}${output_ximage}${NC}"
 
-    read -rp "Overwrite them? ${Yellow}[y/N]${NC} " reply
+    read -rp "Overwrite them? ${Yellow}${BOLD}[y/N]${NORMAL} " reply
 
     case "$reply" in
         [yY]|[yY][eE][sS])
@@ -116,9 +119,9 @@ pushd ota_v0 > /dev/null
 cat rootfs.squashfs.* > rootfs.squashfs  # combine the squashfs file parts into one
 cat xImage.* > "${output_ximage}"  # combine the xImage file parts into one
 
-echo "${Red}##################################"
+echo "${BOLD}##################################"
 echo "### EXTRACTING SQUASHFS-ROOTFS ###"
-echo "##################################${NC}"
+echo "##################################${NORMAL}"
 echo ""
 
 popd > /dev/null # go back to the starting directory
@@ -130,7 +133,7 @@ rm -r $TEMP_DIR  # clean up temp folder
 
 echo ""
 echo "Unpacking complete!"
-echo "Original filesystem extracted to: ${output_dir}"
-echo "xImage extracted to: ${output_ximage}"
+echo "Original filesystem extracted to: ${Cyan}${output_dir}${NC}"
+echo "xImage extracted to: ${Cyan}${output_ximage}${NC}"
 echo ""
-echo "${Red}Now you can modify files in ${output_dir}/${NC}"
+echo "${Yellow}Now you can modify files in ${output_dir}/${NC}"
