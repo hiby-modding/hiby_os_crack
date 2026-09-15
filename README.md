@@ -42,6 +42,7 @@ This repo is applicable to any HiBy OS device that uses the `.upt` firmware type
 We have collected documentation and created firmware unpacking/repacking scripts for the following devices:
 - HiBy R1
 - HiBy R3Pro II
+- Hiby R3II 2025
 
 ## Guides
 - [installing firmware](/guides/INSTALLING_FIRMWARE.md)
