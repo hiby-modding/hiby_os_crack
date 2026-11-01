@@ -44,36 +44,36 @@ your SD and recover using the recovery mode.
 2. If you succeeded there should be a libusb-win32 device section in
     your device manager with an "usb cloner device".
 
-    ![device_manager](/resources/guides/UNBRICK.md/device_manager.png)
+    ![device_manager](/resources/guides/UNBRICKING.md/device_manager.png)
 
 3. Next, you will need to unpack the cloner, and open the cloner.exe.
     In the bottom right corner there’s a combo box that allows you to
     select the language, pick English.
 
-    ![cloner_step1](/resources/guides/UNBRICK.md/cloner_step1.png)
+    ![cloner_step1](/resources/guides/UNBRICKING.md/cloner_step1.png)
 
 4. Now click "Load Image" and select the recovery image you downloaded
     before.
 
-    ![cloner_step2](/resources/guides/UNBRICK.md/cloner_step2.png)
+    ![cloner_step2](/resources/guides/UNBRICKING.md/cloner_step2.png)
 
 5. Just press "Start", if all went well your device should now start to
     be flashed. It takes 1 minute or so. After its done your player will
     reboot and you are done!
 
-    ![cloner_step3](/resources/guides/UNBRICK.md/cloner_step3.png)
+    ![cloner_step3](/resources/guides/UNBRICKING.md/cloner_step3.png)
 
 ### How it should progress
 
 1. Loading 1st and 2nd preloaders, checking if your device matches the
     supplied config and erasing the NAND.
-    ![cloner_progress_1](/resources/guides/UNBRICK.md/cloner_step4_prog1.png)
+    ![cloner_progress_1](/resources/guides/UNBRICKING.md/cloner_step4_prog1.png)
 
 2. Flashing the boot loader, kernel and rootfs images.
-    ![cloner_progress_2](/resources/guides/UNBRICK.md/cloner_step4_prog2.png)
+    ![cloner_progress_2](/resources/guides/UNBRICKING.md/cloner_step4_prog2.png)
 
 3. Successful flash, device reboots.
-    ![cloner_progress_3](/resources/guides/UNBRICK.md/cloner_step4_prog3.png)
+    ![cloner_progress_3](/resources/guides/UNBRICKING.md/cloner_step4_prog3.png)
 
 ## Troubleshooting
 
@@ -81,7 +81,7 @@ your SD and recover using the recovery mode.
 
 If the cloner just shows you this, make sure you have the drivers
 installed and your device is plugged in (check device manager).
-![cloner_waiting](/resources/guides/UNBRICK.md/cloner_waiting.png)
+![cloner_waiting](/resources/guides/UNBRICKING.md/cloner_waiting.png)
 
 ### Wrong loaders
 
@@ -91,8 +91,8 @@ package with the ones that come with the cloner you are trying
 to use, check Additional Notes for information how to accomplish
 that.
 
-![cloner_error1](/resources/guides/UNBRICK.md/cloner_error1.png)
-![cloner_error2](/resources/guides/UNBRICK.md/cloner_error2.png)
+![cloner_error1](/resources/guides/UNBRICKING.md/cloner_error1.png)
+![cloner_error2](/resources/guides/UNBRICKING.md/cloner_error2.png)
 
 ## Additional Notes
 
