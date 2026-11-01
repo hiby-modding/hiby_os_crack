@@ -11,17 +11,24 @@ This file describes how to unpack the firmware, as well as the main structure of
 - binwalk (to extract uImage. it's overkill for this, but it does all of the uImage extraction work automatically)
 
 
-## Script
-There is a script that does this automatically [for the R3ProII](/r3proii/unpacking_and_repacking/unpack-helper.sh) and another script [for the R1](/r1/unpacking_and_repacking/unpack-helper.sh).
+## Scripts for Unpacking
+There is a script that does this automatically: [unpack-helper.sh](/unpacking_and_repacking/unpack-helper.sh). You just run it (no flags or anything), and follow the steps it gives you.
+
+And if your device isn't one of the ones in the automatic unpacker you can do one of the following:
+1. You could add your device as a new folder in the [`/firmwares/`](/firmwares/) directory.
+2. Or you could just use the generic unpacker script [`/scripts/unpack.sh`](/scripts/unpack.sh), which should work for everything
+
+The scripts should work for all devices using this type of firmware, so there's no need to manually unpack.
 
 ## Steps for Manual Unpacking
 Here's the instructions for manually unpacking the firmware. Just here for documentation, since the scripts can do it automatically.
 ### extracting the upt file
 - The original firmware file is a `.upt` file. It's an ISO image.
-    - *Note: in this guide, it will be refered to as `r3proii.upt`, since this is written for the R3ProII, but most, if not all, steps are the same for extracting the UPT firmware of other HiBy OS devices such as the R1*
-- To extract that image, run `7z x r3proii.upt`
+    - *Note: in this guide, it will be refered to as `[DEVICE].upt`, since this is written to be device-generic. If youre unpacking R1 firmware, it would be `r1.upt`, and for the R3Pro II, it would be `r3proii.upt`, etc.*
+- To extract that image, run `7z x [DEVICE].upt`
 - That will have created a file and a folder. The file, `ota_config.in`, just says "current_version=0". The folder, `ota_v0/`, contains a bunch of stuff
-![ota_v0](/resources/UNPACKING.md/ota_v0.png)
+
+    ![ota_v0](/resources/UNPACKING.md/ota_v0.png)
 - There are a bunch of squashfs files, and a bunch of xImage files
 
 ### extracting the squashfs file
@@ -33,7 +40,8 @@ Here's the instructions for manually unpacking the firmware. Just here for docum
     - Running this command with sudo is needed in order to maintain the original file ownership and permissions. This is required in order to make a working repack of the firmware.
     - If run without sudo, the rootfs will be extracted just file, but with all of the file permissions set to your user.
 - The `squashfs-root` folder is what acts as the linux root directory on the device when firmware is flashed
-![squashfs-root](/resources/UNPACKING.md/squashfs-root.png)
+
+    ![squashfs-root](/resources/UNPACKING.md/squashfs-root.png)
 
 ### extracting the xImage file
 - To concatenate the xImage files into one, run `cat xImage.* > xImage.all`. This creates a new file called `xImage.all` that contains the concatenated data

@@ -1,6 +1,10 @@
 # QEMU Section Readme
 
-this folder is for stuff needed to emulate the device
+**NOTE: QEMU emulation for this project is currently non-functional. We don't yet have it past the point of the kernel panicking, but you can at least get that far.**
+
+This folder is for stuff needed to emulate the device.
+
+Check out [qemu-board-emulation-guide.md](qemu-board-emulation-guide.md).
 
 ## Folder Structure
 ### Scripts

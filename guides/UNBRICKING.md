@@ -15,7 +15,7 @@ your SD and recover using the recovery mode.
 - Cloner (cloner-2.5.80.2-windows_alpha or cloner-2.5.80.2-ubuntu_alpha).
     Heads up when you open the cloner the reported version is different
     from the one in the archive, this is expected (it will show 2.5.58.6).
-    Provided in this repo in the **tools** folder.
+    Provided in this repo in the [`/tools`](/tools/) folder.
 
 - For windows users: Cloner driver (cloner-win32-driver)
     Included in the cloner zip.
@@ -24,7 +24,7 @@ your SD and recover using the recovery mode.
     and recovery rootfs so that is not enough). They are provided in this
     repo.
     Both have been updated to work with the 2.5.80.2 version of the cloner.
-    Provided in the **\<player name\>/firmware/recovery_cloner** folder.
+    Provided in the **/firmwares/[DEVICE]/recovery_cloner** folder.
 
     Currently images for the R1, R3 II 2025 and TempoTec Variations v1
     are available in this repo.

@@ -66,6 +66,6 @@ Now install dependencies and binwalk
 
 `cargo build --release`
 
-**5. Install QEMU (Windows)**
+**5. Install QEMU (Windows) (Just for if you want to work on the QEMU emulation)**
 
 Download and run in Windows: `https://qemu.weilnetz.de/w64/qemu-w64-setup-20251224.exe`

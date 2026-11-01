@@ -6,6 +6,13 @@ Cracking the firmware of HiBy's linux devices
 
 ---
 
+This readme should lay out pretty much everything that's in this repo. So I'd recommend reading through this to look for stuff, rather than looking around the file tree, since this gives explanations and such.
+
+> [!NOTE]
+> If anything in this readme (or anything else in this repo) is confusing, please make an issue or something to say how you found it confusing/unclear. I love getting feedback, so that I can improve the clarity and usefulness of this repo.
+
+---
+
 This repo is for:
 - Tools to unpack/repack hiby os firmwares
 - Documentation on the structure of the firmware
@@ -14,22 +21,18 @@ This repo is for:
 
 ---
 
-> [!NOTE]
-> This project is part of the [hiby-modding organization](https://github.com/hiby-modding). Also see:
-> - [hiby-r3proii-custom-firmware](https://github.com/hiby-modding/hiby-r3proii-custom-firmware) by noisetta — complementary firmware modding project that adds Arabic text rendering support and documents the proprietary OTA firmware format.
-
 > [!TIP]
 > **How Can I Help❓**: If you want to help with this project, <ins>*whether you're a developer or not*</ins>, look at [HOW_CAN_I_HELP.md](/HOW_CAN_I_HELP.md).
 
 > [!TIP]
-> To talk with the community <ins>*whether you're a developer or not*</ins>, you can join the HiBy OS Modding discord: [https://discord.gg/mSEuafxPH](https://discord.gg/mSEuafxPH)
+> To talk with the community <ins>*whether you're a developer or not*</ins>, you can join the HiBy OS Modding discord: [https://discord.gg/mSEuafxPH](https://discord.gg/trDbWPU32H)
 >
 > I host the discord, and it has the same scope as this project (current HiBy OS devices)
 >
 > The discord link will expire every once in a while. If you want to join but the link is expired, you can make an issue in this repo, or contact me in whatever other way to inform me.
 
 ## Scope
-- The goal of this project is to make it possible to modify the HiBy OS firmware to add custom functionality.
+- The goal of this project is to provide everything you might need to modify the HiBy OS firmware to add custom functionality.
 - For now, this project also only focuses on the HiBy OS firmware used by the generation including the R1, R3 II 2025, R3 Pro II, and Tempotec V1. These devices all use the `.upt` firmware format and have an Ingenic X1600E CPU.
     - Older devices such as the R3 Pro and the R3 Pro Saber used a different format. see [hiby-firmware-tools](https://github.com/SuperTaiyaki/hiby-firmware-tools) by SuperTaiyaki on GitHub for that older type of firmware
 
@@ -57,54 +60,54 @@ We have collected documentation and created firmware unpacking/repacking scripts
     - Can unpack any `.upt` firmware
 - [general upt firmware repacking script (no helper)](/scripts/repack.sh)
     - Can repack any unpacked `.upt` firmware
-- Unpacking and repacking helper scripts. Called `unpack-helper.sh` and `repack-helper.sh` exist in the `unpacking_and_repacking` directory for the relevant device.
+- Unpacking and repacking helper scripts. Called [`unpack-helper.sh`](/unpacking_and_repacking/unpack-helper.sh) and [`repack-helper.sh`](/unpacking_and_repacking/repack-helper.sh) exist in the [`unpacking_and_repacking`](/unpacking_and_repacking/) directory.
     - Base firmwares are already provided
     - No configuring needed, just run the script and select what you want
     - This helper (automatic) script has only been written for devices that we've collected documentation and firmware for already, so we don't have it for every supported device yet. Feel free to contribute those for new devices.
 
+## Firmwares
+
+You can see all the firmwares we've collected in [`/firmwares/`](/firmwares/). This includes a few versions of the original device firmwares. And for some devices, we have the recovery cloner image (useful for unbricking the devices).
+
 ## Documentation
 - [this README](/README.md)
-- [project TODO](/TODO.md)
 - [firmware file system structure](/docs/ROOTFS_STRUCTURE.md)
 - [charge management](/docs/CHARGE_MANAGEMENT.md)
+    - Also discusses replacement batteries
+- [decomp backups README](/decomp_backups/)
 - R3ProII
     - [specs](/docs/r3proii/SPECS.md)
     - [output modes](/docs/r3proii/OUTPUT_MODES.md)
-    - [qemu readme](/r3proii/qemu/README.md)
-        - QEMU functionality is very experimental, we haven't gotten very far into making it work
 - R1
     - [specs](/docs/r1/SPECS.md)
-    - [qemu readme](/r1/qemu/README.md)
-        - QEMU functionality is very experimental, we haven't gotten very far into making it work
 - Third Party
-    - Curated
-        - HiBy User Manuals
-            - [R3 Pro II](/docs/third_party/hiby/HiBy_R3PROII_User_Manual_HiBy_WiKi.pdf)
-            - [R1](/docs/third_party/hiby/HiBy_R1_User_Manual_HiBy_WiKi.pdf)
-        - Ingenic x1600e (SOC)
-            - [x1600e datasheet](/docs/third_party/soc/X1600_E+Data+Sheet.pdf)
-            - [XBurst ISA MXU](/docs/third_party/soc/X1000_M200_XBurst_ISA_MXU_PM.pdf)
-            - [XBurst ISA MXU2](/docs/third_party/soc/XBurst1+Instruction+Set+Architecture+MIPS+extension_enhanced+Unit+2.pdf)
-            - [XBurst1 Programming Manual](/docs/third_party/soc/XBurst1_CPU_core-programming_manual.pdf)
-        - Components
-            - [CW2015 datasheet](docs/third_party/components/cw2015-power-management-datasheet.pdf)
-                - Fuel Gauge
-            - [MP2731 datasheet](docs/third_party/components/MP2731GQC.pdf)
-                - Charge Controller
-            - [AXP2101 datasheet](docs/third_party/components/X-power-AXP2101_SWcharge_V1.0.pdf)
-                - Charge Controller
-            - [AP6212 datasheet](docs/third_party/components/AP6212_datasheet_EN.pdf)
-                - Wireless Controller
-        - Halley 6 (Ingenic x1600 development board)
-            - [hardware manual](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.pdf) ([translated](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.zh-CN_translated_EN.pdf))
-            - [baseboard schematic](/docs/third_party/halley6/halley6_baseboard_v2.0.pdf)
-            - [coreboard schematic](/docs/third_party/halley6/halley6_coreboard_v2.0.pdf)
-            - [software platform rapid development](/docs/third_party/halley6/00-Halley6_Software_Platform_Rapid_Development_Guide-v2.0.pdf)
-            - [uboot development](/docs/third_party/halley6/01-Halley6_uboot_Development_Manual_v20.pdf)
-            - [kernel development](/docs/third_party/halley6/02_Halley6_Kernel_development_manual_v2.pdf)
-            - [platform application development](/docs/third_party/halley6/03-X1600-halley6_Platform_Application_Development_Manual-v2.0.pdf)
-            - [linux 4.4 kernel modularity](/docs/third_party/halley6/04-Linux-4.4_Kernel_Modularity_Instruction_Manual_v2.0.pdf)
-            - [reserved memory configuration description](/docs/third_party/halley6/05-Halley6_Reserved_Memory_Configuration_Description_v2.0.pdf)
+    - HiBy User Manuals
+        - [R3 Pro II](/docs/third_party/hiby/HiBy_R3PROII_User_Manual_HiBy_WiKi.pdf)
+        - [R1](/docs/third_party/hiby/HiBy_R1_User_Manual_HiBy_WiKi.pdf)
+    - Ingenic x1600e (SOC)
+        - [x1600e datasheet](/docs/third_party/soc/X1600_E+Data+Sheet.pdf)
+        - [XBurst ISA MXU](/docs/third_party/soc/X1000_M200_XBurst_ISA_MXU_PM.pdf)
+        - [XBurst ISA MXU2](/docs/third_party/soc/XBurst1+Instruction+Set+Architecture+MIPS+extension_enhanced+Unit+2.pdf)
+        - [XBurst1 Programming Manual](/docs/third_party/soc/XBurst1_CPU_core-programming_manual.pdf)
+    - Components
+        - [CW2015 datasheet](docs/third_party/components/cw2015-power-management-datasheet.pdf)
+            - Fuel Gauge
+        - [MP2731 datasheet](docs/third_party/components/MP2731GQC.pdf)
+            - Charge Controller
+        - [AXP2101 datasheet](docs/third_party/components/X-power-AXP2101_SWcharge_V1.0.pdf)
+            - Charge Controller
+        - [AP6212 datasheet](docs/third_party/components/AP6212_datasheet_EN.pdf)
+            - Wireless Controller
+    - Halley 6 (Ingenic x1600 development board)
+        - [hardware manual](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.pdf) ([translated](/docs/third_party/halley6/Halley6_hardware_develop_V2.1.zh-CN_translated_EN.pdf))
+        - [baseboard schematic](/docs/third_party/halley6/halley6_baseboard_v2.0.pdf)
+        - [coreboard schematic](/docs/third_party/halley6/halley6_coreboard_v2.0.pdf)
+        - [software platform rapid development](/docs/third_party/halley6/00-Halley6_Software_Platform_Rapid_Development_Guide-v2.0.pdf)
+        - [uboot development](/docs/third_party/halley6/01-Halley6_uboot_Development_Manual_v20.pdf)
+        - [kernel development](/docs/third_party/halley6/02_Halley6_Kernel_development_manual_v2.pdf)
+        - [platform application development](/docs/third_party/halley6/03-X1600-halley6_Platform_Application_Development_Manual-v2.0.pdf)
+        - [linux 4.4 kernel modularity](/docs/third_party/halley6/04-Linux-4.4_Kernel_Modularity_Instruction_Manual_v2.0.pdf)
+        - [reserved memory configuration description](/docs/third_party/halley6/05-Halley6_Reserved_Memory_Configuration_Description_v2.0.pdf)
     - Sources
         - [Ingenic Docs Git](https://gitee.com/ingenic-dev/ingenic-linux-docs/tree/ingenic-master)
             - [X16XX-halley6](https://gitee.com/ingenic-dev/ingenic-linux-docs/blob/ingenic-master/zh-cn/X16XX/X16XX-halley6/01_%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.md)
@@ -117,13 +120,13 @@ We have collected documentation and created firmware unpacking/repacking scripts
 ## Unpacking and Repacking Workflow Overview
 > [!TIP]
 > For more specific and detailed instructions, look at [UNPACKING.md](/guides/UNPACKING.md) and [REPACKING.md](/guides/REPACKING.md).
-1. Depending on your device, enter either the `r1` directory or the `r3proii` directory
-2. if you want to unpack a firmware not in this repo already, add it in the `firmware/custom` directory
-3. enter the `unpacking_and_repacking` directory for your device
+1. if you want to unpack a firmware not in this repo already, add it in the `/firmwares/[DEVICE]/custom` directory (e.g. `/firmwares/r1/custom` for the R1)
+3. enter the `/unpacking_and_repacking/` directory
 4. to unpack your firmware use the `unpack-helper.sh` script and choose the firmware you want to unpack
     - The linux root filesystem of the firmware will be extracted into a folder
 5. to repack your firmware, just run the `repack-helper.sh` script
 
-> [!NOTE]
-> - You might need to create the `firmware/custom` directory if it doesn't exist
-> - I've made it so that the unpacking and repacking scripts no longer need sudo in order to run
+
+## QEMU Emulation
+
+QEMU emulation stuff is stored in [`/qemu/`](/qemu/). [Here's the readme](/qemu/README.md). QEMU emulation for this project is currently non-functional. We don't yet have it past the point of the kernel panicking, but you can at least get that far.

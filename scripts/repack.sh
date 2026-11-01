@@ -195,8 +195,8 @@ popd >/dev/null
 
 rm -rf "$TEMP_DIR"
 
-echo ""
-echo "Repacking complete!"
-echo "Firmware image saved as ${output_file}"
-echo ""
-echo "Now you can flash this to the device"
+echo -e ""
+echo -e "Repacking complete!"
+echo -e "Firmware image saved as ${Cyan}${output_file}${NC}"
+echo -e ""
+echo -e "${Yellow}Now you can flash this to the device${NC}"

@@ -1,5 +1,7 @@
 # Todo List
 
+**NOTE: this todo list is very out of date. I'm just leaving it for now. To see what actual todo items there are, look at the github issues, or chat on the discord.**
+
 ## This Project
 - [x] add vm image files `rootfs-image` and `initrd.cpio` to gitignore
 - [x] firmware unpacking script
