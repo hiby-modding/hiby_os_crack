@@ -10,6 +10,7 @@ firmwares/*/custom
 unpacking_and_repacking/*.upt
 unpacking_and_repacking/xImage
 unpacking_and_repacking/squashfs-root/
+unpacking_and_repacking/ota_compatibility.in
 
 # Claude Code
 .claude/

@@ -23,9 +23,10 @@ show_help() {
 ${Green}Usage:${NC} $(basename "$0") ${Cyan}-i${NC} ${Yellow}INPUT_FILE${NC} ${Cyan}-o${NC} ${Yellow}OUTPUT_DIRECTORY${NC}
 
 ${Green}Options:${NC}
-  ${Yellow}-i ${Cyan}FILE${NC}    Input .upt file          ${Red}(required)${NC}
-  ${Yellow}-k ${Cyan}FILE${NC}    Output xImage file       ${Red}(required)${NC}
-  ${Yellow}-o ${Cyan}DIR${NC}     Output directory         ${Red}(required)${NC}
+  ${Yellow}-i ${Cyan}FILE${NC}    Input .upt file               ${Red}(required)${NC}
+  ${Yellow}-k ${Cyan}FILE${NC}    Output xImage file            ${Red}(required)${NC}
+  ${Yellow}-o ${Cyan}DIR${NC}     Output directory              ${Red}(required)${NC}
+  ${Yellow}-c ${Cyan}DIR${NC}     Output ota_compatibility.in   ${Purple}(optional)${NC}
   ${Yellow}-h${NC}         Show this help message
 
 ${Green}Example:${NC}
@@ -43,8 +44,11 @@ error() {
 input_file=""
 output_ximage=""
 output_dir=""
+output_ota_compatibility=""
 
-while getopts ":i:k:o:h" opt; do
+ota_compatibility_found=false  # tracks whether the extracted firmware had an ota_compatibility.in file (used for warning at the end)
+
+while getopts ":i:k:o:c:h" opt; do
     case "$opt" in
         i)
             input_file="$OPTARG"
@@ -54,6 +58,9 @@ while getopts ":i:k:o:h" opt; do
             ;;
         o)
             output_dir="$OPTARG"
+            ;;
+        c)
+            output_ota_compatibility="$OPTARG"
             ;;
         h)
             show_help
@@ -77,12 +84,13 @@ done
 [[ -f "$input_file" ]] || error "Input file '$input_file' does not exist."
 
 # Check whether either output already exists
-if [[ -e "$output_dir" || -e "$output_ximage" ]]; then
+if [[ -e "$output_dir" || -e "$output_ximage" || -e "$output_ota_compatibility" ]]; then
     echo
     echo -e "${Red}${BOLD}WARNING${NORMAL}${Red}: One or more output files already exist:${NC}"
 
     [[ -e "$output_dir" ]]    && echo "  - ${Cyan}${output_dir}${NC}"
     [[ -e "$output_ximage" ]] && echo "  - ${Cyan}${output_ximage}${NC}"
+    [[ -e "$output_ota_compatibility" ]] && echo "  - ${Cyan}${output_ota_compatibility}${NC}"
 
     read -rp "Overwrite them? ${Yellow}${BOLD}[y/N]${NORMAL} " reply
 
@@ -90,6 +98,7 @@ if [[ -e "$output_dir" || -e "$output_ximage" ]]; then
         [yY]|[yY][eE][sS])
             [[ -e "$output_dir" ]]    && rm -rf "$output_dir"
             [[ -e "$output_ximage" ]] && rm -f "$output_ximage"
+            [[ -e "$output_ota_compatibility" ]] && rm -f "$output_ota_compatibility"
             ;;
         *)
             echo "Aborted."
@@ -104,13 +113,18 @@ mkdir -p "$output_dir"
 # Convert input and output into absolute path
 input_file=$(realpath "$input_file")
 output_dir=$(realpath "$output_dir")
-
-if [[ -d $TEMP_DIR ]]; then
-	rm -rf $TEMP_DIR  # clean up old temp folder in case it exists (can happen if a script fails to finish)
+if [[ -n "$output_ota_compatibility" ]]; then
+	output_ota_compatibility=$(realpath "$output_ota_compatibility")
 fi
 
-mkdir -p $TEMP_DIR
+# clean up old temp folder in case it exists (can happen if a script fails to finish)
+if [[ -d $TEMP_DIR ]]; then
+	rm -rf $TEMP_DIR
+fi
 
+mkdir -p $TEMP_DIR  # make new temp directory
+
+# move into temp directory for working in
 pushd $TEMP_DIR > /dev/null
 7z x $input_file  # extract the contents of the firmware iso image
 
@@ -119,10 +133,18 @@ pushd ota_v0 > /dev/null
 cat rootfs.squashfs.* > rootfs.squashfs  # combine the squashfs file parts into one
 cat xImage.* > "${output_ximage}"  # combine the xImage file parts into one
 
-echo "${BOLD}##################################"
-echo "### EXTRACTING SQUASHFS-ROOTFS ###"
-echo "##################################${NORMAL}"
-echo ""
+# copy out ota_compatibility.in (if output file flag is set AND ota_compatibility.in exists in the firmware)
+if [[ -n "$output_ota_compatibility" ]]; then
+	if [[ -f "ota_compatibility.in" ]]; then
+		ota_compatibility_found=true
+		cat ota_compatibility.in > "${output_ota_compatibility}"  # combine the xImage file parts into one
+	fi
+fi
+
+echo -e "${BOLD}##################################"
+echo -e "### EXTRACTING SQUASHFS-ROOTFS ###"
+echo -e "##################################${NORMAL}"
+echo -e ""
 
 popd > /dev/null # go back to the starting directory
 
@@ -131,9 +153,19 @@ unsquashfs -d $output_dir "${TEMP_DIR}ota_v0/rootfs.squashfs"
 
 rm -r $TEMP_DIR  # clean up temp folder
 
-echo ""
-echo "Unpacking complete!"
-echo "Original filesystem extracted to: ${Cyan}${output_dir}${NC}"
-echo "xImage extracted to: ${Cyan}${output_ximage}${NC}"
-echo ""
-echo "${Yellow}Now you can modify files in ${output_dir}/${NC}"
+# TODO: add some notificaion if ota_compatibility.in was supposed to be extracted, but was not found in the firmware
+echo -e ""
+echo -e "${Yellow}Unpacking complete!${NC}"
+echo -e "Linux filesystem extracted to: ${Cyan}${output_dir}${NC}"
+echo -e "xImage extracted to: ${Cyan}${output_ximage}${NC}"
+echo -e "ota_compatibility.in extracted to: ${Cyan}${output_ota_compatibility}${NC}"
+# warning for if ota_compatibility.in was supposed to be extracted, but was not found
+if [[ -n "$output_ota_compatibility" ]]; then
+	if [ "$ota_compatibility_found" = false ]; then
+		echo -e ""
+		echo -e "${Red}WARNING: Flag was set to extract ${Cyan}ota_compatibility.in${Red}, but it was not found in the firmware.${NC}"
+		echo -e "${Red}    - This isn't a problem, it just means that the firmware you extracted doesn't have that file (which was added for the v2.0 HiBy R1).${NC}"
+	fi
+fi
+echo -e ""
+echo -e "${Yellow}Now you can modify files in ${output_dir}/${NC}"

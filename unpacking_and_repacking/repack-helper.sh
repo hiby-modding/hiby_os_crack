@@ -22,8 +22,15 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel)
 UNPACKING_AND_REPACKING_DIR="${PROJECT_ROOT}/unpacking_and_repacking"
 SQUASHFS_ROOT="${UNPACKING_AND_REPACKING_DIR}/squashfs-root"
 XIMAGE_PATH="${UNPACKING_AND_REPACKING_DIR}/xImage"
+OTA_COMPATIBILITY="${UNPACKING_AND_REPACKING_DIR}/ota_compatibility.in"
 
 FIRMWARE_DIR="${PROJECT_ROOT}/firmwares"
+
+# variable to track whether ota_compatibility.in file is available for repacking with
+[[ -f "$OTA_COMPATIBILITY" ]] && ota_compatibility_present=true || ota_compatibility_present=false
+
+repack_ota_compatibility=false  # variable for whether to repack ota_compatibility.in (set later by asking user)
+
 
 echo -e "${BOLD}########################"
 echo -e "### SELECTING DEVICE ###"
@@ -71,6 +78,32 @@ echo -e
 
 OUT_PKG="${UNPACKING_AND_REPACKING_DIR}/${DEVICE}.upt"
 
+
+# Include ota_compatibility.in
+echo
+if [ "$ota_compatibility_present" = true ]; then
+	while true; do
+		read -rp "$(echo -e "Include ota_compatibility.in file? ${Yellow}${BOLD}[Y/n]${NORMAL} ")" reply
+
+		case "$reply" in
+    ""|[yY]|[yY][eE][sS])  # empty answer is counted as yes
+        repack_ota_compatibility=true
+        break
+        ;;
+    [nN]|[nN][oO])
+    	break
+     	;;
+    *)
+    	echo -e "Invalid selection."
+     	;;
+
+		esac
+	done
+else
+	echo -e ""
+fi
+
+
 # Pre-checks
 if [[ ! -d "${SQUASHFS_ROOT}" ]] || [[ ! -f "${XIMAGE_PATH}" ]]; then
     echo -e "${Red}${BOLD}Error${NORMAL}: Missing squashfs-root/ directory or xImage file.${NC}"
@@ -78,5 +111,17 @@ if [[ ! -d "${SQUASHFS_ROOT}" ]] || [[ ! -f "${XIMAGE_PATH}" ]]; then
     exit 1
 fi
 
+
 # run the repacking script
-"${PROJECT_ROOT}/scripts/repack.sh" -i "${SQUASHFS_ROOT}" -k "${XIMAGE_PATH}" -o "${OUT_PKG}"
+repack_args=(-i "${SQUASHFS_ROOT}" -k "${XIMAGE_PATH}" -o "${OUT_PKG}")
+
+if $ota_compatibility_present && $repack_ota_compatibility; then
+    repack_args+=(-c "${OTA_COMPATIBILITY}")
+fi
+
+"${PROJECT_ROOT}/scripts/repack.sh" "${repack_args[@]}"
+
+if ! $ota_compatibility_present; then
+	echo -e ""
+	echo -e "${Yellow}NOTE: No ${Cyan}ota_compatibility.in${Yellow} file found, so it was not included in the repacked firmware, this may mean the firmware will not be compatible with some players (such as a HiBy R1 that came with the v2.0 firmware).${NC}"
+fi

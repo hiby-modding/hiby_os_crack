@@ -2,25 +2,25 @@
 [source](https://guide.hiby.com/en/docs/products/audio_player/hiby_r3proii/spec)
 
 ## Hardware platform
-|        Category        |                         Chip                        |
-|:----------------------:|:---------------------------------------------------:|
-| Master Control         | Ingenic X1600E                                      |
-| Memory specifications  | 64MB                                                |
-| Storage Specifications | 1Gbit                                               |
-| WiFi                   | 2.4GHz                                              |
-| Bluetooth              | BT 5.0 2402MHz ~ 2480MHz                            |
-| LCD                    | 720*480 (RGB interface)                             |
-| LCD IF                 | RGB                                                 |
-| TF                     | 1 Slot(Max. 2T)                                     |
-| LED                    | RGB + White                                         |
-| Battery                | 4000mAh                                             |
-| PMU                    | AXP2101 + MP2731                                    |
-| Charger                | 9V@1.67A/5V@3A/5V@1A                                |
-| USB                    | USB 2.0, Type-C                                     |
+|        Category        |                         Chip                           |
+|:----------------------:|:------------------------------------------------------:|
+| Master Control         | Ingenic X1600E                                         |
+| Memory specifications  | 64MB                                                   |
+| Storage Specifications | 1Gbit                                                  |
+| WiFi                   | 2.4GHz                                                 |
+| Bluetooth              | BT 5.0 2402MHz ~ 2480MHz                               |
+| LCD                    | 720*480 (RGB interface)                                |
+| LCD IF                 | RGB                                                    |
+| TF                     | 1 Slot(Max. 2T)                                        |
+| LED                    | RGB + White                                            |
+| Battery                | 4000mAh                                                |
+| PMU                    | AXP2101 + MP2731                                       |
+| Charger                | 9V@1.67A/5V@3A/5V@1A                                   |
+| USB                    | USB 2.0, Type-C                                        |
 | Key                    | Power key, up and down, volume buttons, playback pause |
-| DAC                    | CS43131  Dual                                       |
-| PhoneOut               | 3.5mm                                               |
-| Balance                | 4.4mm                                               |
+| DAC                    | CS43131  Dual                                          |
+| PhoneOut               | 3.5mm                                                  |
+| Balance                | 4.4mm                                                  |
 
 
 ## Software Platform

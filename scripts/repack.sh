@@ -27,9 +27,9 @@ ${Cyan}-o${NC} ${Yellow}OUTPUT_FILE${NC} \
 [${Cyan}-c${NC} ${Yellow}COMPATIBILITY_FILE${NC}]
 
 ${Green}Options:${NC}
-  ${Yellow}-i${NC} ${Cyan}DIR${NC}     squashfs-root directory   ${Red}(required)${NC}
-  ${Yellow}-k${NC} ${Cyan}FILE${NC}    xImage                    ${Red}(required)${NC}
-  ${Yellow}-o${NC} ${Cyan}FILE${NC}    Output .upt file          ${Red}(required)${NC}
+  ${Yellow}-i${NC} ${Cyan}DIR${NC}     squashfs-root directory                 ${Red}(required)${NC}
+  ${Yellow}-k${NC} ${Cyan}FILE${NC}    xImage                                  ${Red}(required)${NC}
+  ${Yellow}-o${NC} ${Cyan}FILE${NC}    Output .upt file                        ${Red}(required)${NC}
   ${Yellow}-c${NC} ${Cyan}FILE${NC}    Copied as ota_v0/ota_compatibility.in   ${Purple}(optional)${NC}
   ${Yellow}-h${NC}         Show this help
 EOF
@@ -45,14 +45,14 @@ error() {
 input_root=""
 input_ximage=""
 output_file=""
-input_compatibility=""
+input_ota_compatibility=""
 
 while getopts ":i:k:o:c:h" opt; do
     case "$opt" in
         i) input_root="$OPTARG" ;;
         k) input_ximage="$OPTARG" ;;
         o) output_file="$OPTARG" ;;
-        c) input_compatibility="$OPTARG" ;;
+        c) input_ota_compatibility="$OPTARG" ;;
         h)
             show_help
             exit 0
@@ -72,9 +72,9 @@ done
 
 [[ -d "$input_root" ]]   || error "'$input_root' does not exist."
 [[ -f "$input_ximage" ]] || error "'$input_ximage' does not exist."
-if [[ -n "$input_compatibility" ]]; then
-    [[ -f "$input_compatibility" ]] || error "'$input_compatibility' does not exist."
-    input_compatibility=$(realpath "$input_compatibility")
+if [[ -n "$input_ota_compatibility" ]]; then
+    [[ -f "$input_ota_compatibility" ]] || error "'$input_ota_compatibility' does not exist."
+    input_ota_compatibility=$(realpath "$input_ota_compatibility")  # convert to absolute path
 fi
 
 # convert to absolute paths
@@ -190,8 +190,8 @@ EOM
 echo > ota_v0.ok
 
 # Optionally copy ota_compatibility.in
-if [[ -n "$input_compatibility" ]]; then
-    cp "${input_compatibility}" ota_compatibility.in
+if [[ -n "$input_ota_compatibility" ]]; then
+    cp "${input_ota_compatibility}" ota_compatibility.in
 fi
 
 # Generate ota_config.in in parent directory (temp/)

@@ -29,6 +29,8 @@ UNPACKING_AND_REPACKING_DIR="${PROJECT_ROOT}/unpacking_and_repacking"
 SQUASHFS_OUT_ROOT="${UNPACKING_AND_REPACKING_DIR}/squashfs-root"
 XIMAGE_OUT_PATH="${UNPACKING_AND_REPACKING_DIR}/xImage"
 
+extract_ota_compatibility=false  # variable for whether to extract ota_compatibility.in (set later by asking user)
+
 echo -e "${BOLD}##########################"
 echo -e "### SELECTING FIRMWARE ###"
 echo -e "##########################${NC}"
@@ -56,7 +58,7 @@ for ((i=0; i<${#DEVICE_DIRS[@]}; i++)); do
     ((index++))
 done
 
-echo -e
+echo -e ""
 
 while true; do
     read -rp "$(echo -e "Select device ${Yellow}${BOLD}[1-$((index-1))]${NORMAL}: ")" choice
@@ -70,7 +72,7 @@ while true; do
     echo -e "Invalid selection."
 done
 
-echo -e
+echo -e ""
 
 # Find all .upt files in original and custom folders
 DEVICE_FIRMWARE_DIR="${FIRMWARE_DIR}/${DEVICE}"
@@ -103,7 +105,7 @@ else
 	done
 fi
 
-echo -e
+echo -e ""
 echo -e "Custom"
 
 if [ ${#CUSTOM_FW[@]} -eq 0 ]; then
@@ -143,5 +145,36 @@ while true; do
 done
 
 
+# ask whether to extract ota_compatibility.in
+echo
+while true; do
+	read -rp "$(echo -e "Extract ota_compatibility.in file? ${Yellow}${BOLD}[Y/n]${NORMAL} ")" reply
+
+	case "$reply" in
+    ""|[yY]|[yY][eE][sS])  # empty answer is counted as yes
+        extract_ota_compatibility=true
+        break
+        ;;
+    [nN]|[nN][oO])
+    	break
+     	;;
+    *)
+    	echo -e "Invalid selection."
+     	;;
+
+	esac
+done
+
+
 # run the unpacking script
-"${PROJECT_ROOT}/scripts/unpack.sh" -i "${FW_PATH}" -k "${XIMAGE_OUT_PATH}" -o "${SQUASHFS_OUT_ROOT}"
+unpack_args=(-i "$FW_PATH" -k "$XIMAGE_OUT_PATH" -o "$SQUASHFS_OUT_ROOT")
+
+if $extract_ota_compatibility; then
+    unpack_args+=(-c "${UNPACKING_AND_REPACKING_DIR}/ota_compatibility.in")
+fi
+
+"${PROJECT_ROOT}/scripts/unpack.sh" "${unpack_args[@]}"
+
+if $extract_ota_compatibility; then
+    unpack_args+=(-c "${UNPACKING_AND_REPACKING_DIR}/ota_compatibility.in")
+fi
